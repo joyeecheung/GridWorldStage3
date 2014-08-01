@@ -1,5 +1,6 @@
 import imagereader.IImageIO;
 
+import java.awt.Graphics2D;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -93,16 +94,8 @@ public class BMPImageIO implements IImageIO
     @Override
     public Image myWrite(Image image, String fileName) throws IOException
     {
-
-        BufferedImage bufferedImage = new BufferedImage(image.getWidth(null),
-                image.getHeight(null), BufferedImage.TYPE_INT_RGB);
-
-        Graphics graphic = bufferedImage.createGraphics();
-        graphic.drawImage(image, 0, 0, null);
-        graphic.dispose();
-
+        BufferedImage bufferedImage = toBufferedImage(image);
         ImageIO.write(bufferedImage, "bmp", new File(fileName));
-
         return image;
     }
 
@@ -127,5 +120,34 @@ public class BMPImageIO implements IImageIO
         }
 
         return result;
+    }
+
+    /**
+     * Converts a given Image into a BufferedImage
+     *
+     * @param img
+     *            The Image to be converted
+     * @return The converted BufferedImage
+     */
+    private static BufferedImage toBufferedImage(Image img)
+    {
+        if (img instanceof BufferedImage)
+        {
+            return (BufferedImage) img;
+        }
+
+        // Create a buffered image with transparency
+        BufferedImage bimage = new BufferedImage(
+                img.getWidth(null),
+                img.getHeight(null),
+                BufferedImage.TYPE_INT_RGB);
+
+        // Draw the image on to the buffered image
+        Graphics bGr = bimage.createGraphics();
+        bGr.drawImage(img, 0, 0, null);
+        bGr.dispose();
+
+        // Return the buffered image
+        return bimage;
     }
 }

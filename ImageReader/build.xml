@@ -3,6 +3,7 @@
     <property name="build.dir" value="build"/>
     <property name="lib.dir" value="lib"/>
     <property name="test.dir" value="test"/>
+    <property name="result.dir" value="bmptest/result"/>
 
     <property name="classes.dir" value="${build.dir}/classes"/>
     <property name="jar.dir" value="${build.dir}/jar"/>
@@ -23,6 +24,7 @@
 
     <target name="clean">
         <delete dir="${build.dir}" />
+        <delete dir="${result.dir}" />
     </target>
 
     <target name="compile">
@@ -56,6 +58,7 @@
 
     <target name="test" depends="compile-test">
         <mkdir dir="${report.dir}"/>
+        <mkdir dir="${result.dir}"/>
         <junit printsummary="yes">
             <classpath refid="test-classpath"></classpath>
             <formatter type="xml"/>
