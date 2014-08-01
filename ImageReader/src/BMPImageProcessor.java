@@ -166,10 +166,10 @@ class GrayFilter extends RGBImageFilter
     @Override
     public int filterRGB(int x, int y, int rgb)
     {
-        int red = (rgb & 0x00ff0000) >> 16;
-        int green = (rgb & 0x0000ff00) >> 8;
-        int blue = rgb & 0x000000ff;
+        int red = (0x00FF0000 & rgb) >> 16;
+        int green = (0x0000FF00 & rgb) >> 8;
+        int blue = 0x000000FF & rgb;
         int gray = (int)(red * 0.299 + green * 0.587 + blue * 0.114);
-        return (rgb & 0xff000000) + (gray << 16)+(gray << 8) + gray;
+        return (rgb & 0xFF000000) | (gray << 16) | (gray << 8) | gray;
     }
 }
