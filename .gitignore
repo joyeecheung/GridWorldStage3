@@ -1,0 +1,6 @@
+.sonar
+build
+lib
+.classpath
+.project
+bmptest
