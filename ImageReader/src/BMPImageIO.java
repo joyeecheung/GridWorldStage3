@@ -24,29 +24,6 @@ public class BMPImageIO implements IImageIO
     private static final int ALPHA = 0xFF << 24;
 
     /**
-     * Read in given number of bytes, from given offset in the byte array,
-     * convert it to int, then return the integer.
-     *
-     * @param buffer
-     *            the byte array as the data source.
-     * @param offset
-     *            where the reading starts
-     * @param size
-     *            number of bytes to read
-     * @return the converted integer
-     */
-    private int readBytes(byte[] buffer, int offset, int size)
-    {
-        int result = 0;
-        for (int i = 0; i < size; ++i)
-        {
-            result |= (buffer[offset + i] & 0x00FF) << i * 8;
-        }
-
-        return result;
-    }
-
-    /**
      * @param filepath
      *            the path to the BMP image to be read.
      */
@@ -129,4 +106,26 @@ public class BMPImageIO implements IImageIO
         return image;
     }
 
+    /**
+     * Read in given number of bytes, from given offset in the byte array,
+     * convert it to int, then return the integer.
+     *
+     * @param buffer
+     *            the byte array as the data source.
+     * @param offset
+     *            where the reading starts
+     * @param size
+     *            number of bytes to read
+     * @return the converted integer
+     */
+    private int readBytes(byte[] buffer, int offset, int size)
+    {
+        int result = 0;
+        for (int i = 0; i < size; ++i)
+        {
+            result |= (buffer[offset + i] & 0x00FF) << i * 8;
+        }
+
+        return result;
+    }
 }

@@ -5,7 +5,7 @@ public class ImageReaderRunner
     public static void main(String[] args)
     {
         BMPImageIO imageio = new BMPImageIO();
-        BMPImageProcesser processor = new BMPImageProcesser();
+        BMPImageProcessor processor = new BMPImageProcessor();
         Runner.run(imageio, processor);
     }
 }
