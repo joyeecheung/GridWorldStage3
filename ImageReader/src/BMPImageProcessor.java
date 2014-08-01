@@ -88,8 +88,8 @@ class ChannelFilter extends RGBImageFilter
 
     // predefined masks
     public static final int RED_MASK = 0xFFFF0000;
-    public static final int GREEN_MASK = 0xFFFF0000;
-    public static final int BLUE_MASK = 0xFFFF0000;
+    public static final int GREEN_MASK = 0xFF00FF00;
+    public static final int BLUE_MASK = 0xFF0000FF;
 
     /**
      * Construct a channel filter with given mask.
@@ -166,10 +166,10 @@ class GrayFilter extends RGBImageFilter
     @Override
     public int filterRGB(int x, int y, int rgb)
     {
-        int red = (0x00FF0000 & rgb) >> 16;
-        int green = (0x0000FF00 & rgb) >> 8;
-        int blue = 0x000000FF & rgb;
-        int gray = (int) (0.299f * red + 0.587f * green + 0.114f * blue);
-        return (0x00FF << 24) | (gray << 16) | (gray << 8) | gray;
+        int red = (rgb & 0x00ff0000) >> 16;
+        int green = (rgb & 0x0000ff00) >> 8;
+        int blue = rgb & 0x000000ff;
+        int gray = (int)(red * 0.299 + green * 0.587 + blue * 0.114);
+        return (rgb & 0xff000000) + (gray << 16)+(gray << 8) + gray;
     }
 }
