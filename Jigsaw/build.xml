@@ -8,7 +8,7 @@
     <property name="jar.dir" value="${build.dir}/jar"/>
     <property name="report.dir" value="${build.dir}/report"/>
 
-    <property name="main-class" value="Runners.RunnerPart1"/>
+    <property name="main-class" value="Runners.RunnerPart2"/>
 
     <path id="application" location="${jar.dir}/${ant.project.name}.jar"/>
 

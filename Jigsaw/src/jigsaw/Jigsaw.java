@@ -19,6 +19,10 @@ public class Jigsaw {
 	private Vector<JigsawNode> solutionPath;// 解路径  ：用以保存从起始状态到达目标状态的移动路径中的每一个状态节点
 	private boolean isCompleted;	// 完成标记：初始为false;当求解成功时，将该标记至为true
 	private int searchedNodesNum;	// 已访问节点数： 用以记录所有访问过的节点的数量
+    private static final int wrongAllWeight = 10;  // 所有放错位的数码个数在A*估价函数中所占权重
+    private static final int distanceWeight = 10;  // 所有放错位的数码与其正确位置的距离之和在A*估价函数中所占权重
+    private static final int wrongNodeWeight = 10;  // 后续节点不正确的数码个数在A*估价函数中所占权重
+    private static final int depthWeight = 0;  // 节点深度在A*估价函数中所占权重
 
 	/**拼图构造函数
 	 * @param bNode - 初始状态节点
@@ -360,18 +364,66 @@ public class Jigsaw {
 		return isCompleted;
 	}
 	
-	/**（Demo+实验二）计算并修改状态节点jNode的代价估计值:f(n)=s(n)。
-	 * s(n)代表后续节点不正确的数码个数
+
+	/**（Demo+实验二）计算并修改状态节点jNode的代价估计值
+	 * 
 	 * @param jNode - 要计算代价估计值的节点；此函数会改变该节点的estimatedValue属性值。
 	 */
 	private void estimateValue(JigsawNode jNode) {
-		int s = 0; // 后续节点不正确的数码个数
-		int dimension = JigsawNode.getDimension();
-		for(int index =1 ; index<dimension*dimension; index++){
-			if(jNode.getNodesState()[index]+1!=jNode.getNodesState()[index+1])
-				s++;
-		}
-		jNode.setEstimatedValue(s);
+		int wrongAll = getWrongAll(jNode);
+		int distance = getDistance(jNode);
+		int wrongNode = getWrongNode(jNode);
+        int nodeDepth = jNode.getNodeDepth();
+		jNode.setEstimatedValue(wrongAll * wrongAllWeight
+                + distance * distanceWeight
+                + wrongNode * wrongNodeWeight
+                + nodeDepth * depthWeight);
 	}
 
+	private static int getWrongAll(JigsawNode jNode) {
+		int s = 0; // 所有放错位的数码的个数
+		int dimension = JigsawNode.getDimension();
+		for (int i = 1; i <= dimension * dimension; i++) {
+			if (jNode.getNodesState()[i] != i && jNode.getNodesState()[i] != 0) {
+				s++;
+			}
+		}
+		return s;
+	}
+
+	private static int getDistance(JigsawNode jNode) {
+		int s = 0; // 所有放错位的数码与其正确位置的曼哈顿距离之和
+		int dimension = JigsawNode.getDimension();
+		for (int i = 1; i <= dimension * dimension; i++) {
+			if (jNode.getNodesState()[i] != i && jNode.getNodesState()[i] != 0) {
+				int goalCol = (jNode.getNodesState()[i] - 1) % dimension;
+				int goalRow = (jNode.getNodesState()[i] - 1) / dimension;
+				int curCol = (i - 1) % dimension;
+				int curRow = (i - 1) / dimension;
+
+				s += Math.abs(goalRow - curRow) + Math.abs(goalCol - curCol);
+			}
+		}
+		return s;
+	}
+
+	private static int getWrongNode(JigsawNode jNode) {
+		int s = 0; // 后续节点不正确的数码个数
+        int dimension = JigsawNode.getDimension();
+
+        // 统计不正确的纵向后续节点
+		for (int index = 1; index < dimension * (dimension - 1); index++) {
+			if (jNode.getNodesState()[index] + dimension 
+                    != jNode.getNodesState()[index + dimension])
+				s++;
+		}
+
+        // 统计不正确的横向后续节点
+        for (int index = 1; index < dimension * dimension; index++) {
+            if (jNode.getNodesState()[index] + 1 != jNode.getNodesState()[index + 1])
+                s++;
+        }
+
+		return s;
+	}
 }
