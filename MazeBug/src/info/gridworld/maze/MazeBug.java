@@ -263,7 +263,8 @@ public class MazeBug extends Bug
      * Drop flower at given location.
      * CAUTION: if it is used with moveTo, move first, drop next.
      * 
-     * @param loc where the flower will be drop
+     * @param loc
+     *            where the flower will be drop
      */
     private void dropFlower(Location loc)
     {
