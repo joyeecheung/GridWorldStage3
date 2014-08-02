@@ -60,16 +60,12 @@ public class MazeBug extends Bug
             ArrayList<Location> firstCross = new ArrayList<Location>();
             firstCross.add(last);
             crossLocation.push(firstCross);
-            System.out.println("Start at " + last);
         }
         
         boolean willMove = canMove();
-        System.out.println("Step Count: " + stepCount);
-        System.out.println("willMove: " + willMove);
         
         if (isEnd == true)
         {
-            System.out.println("End at " + next);
             //to show step count when reach the goal
             if (hasShown == false)
             {
@@ -81,15 +77,12 @@ public class MazeBug extends Bug
         else if (willMove)
         {
             move();
-            System.out.println("Move to " + next);
             //increase step count when move
             stepCount++;
         }
         else
         {  // not the end but can't move
             back();
-            System.out.println("Back to " + next);
-            System.out.println(crossLocation.size());
             stepCount++;
         }
 
@@ -122,12 +115,10 @@ public class MazeBug extends Bug
         for (int d : validDirections)
         {
             Location check = loc.getAdjacentLocation(d);
-//            System.out.println("Check " + check);
 
             // if it is out of the grid, skip
             if (!gr.isValid(check))
             {
-                //System.out.println(check + " Out of grid");
                 continue;
             }
 
@@ -135,22 +126,14 @@ public class MazeBug extends Bug
             // TODO if it is null, add it
             if (neighbor == null)
             {
-                //System.out.println(check + " is null");
                 valid.add(check);
             }
             // TODO if it is a red rock, add it
             else if (neighbor instanceof Rock
                     && neighbor.getColor().equals(Color.RED))
             {
-                //System.out.println(check + " is a red rock");
                 valid.add(check);
             }
-            else
-            {
-                //System.out.println(check + " is " + neighbor);
-            }
-            
-
         }
 
         return valid;
