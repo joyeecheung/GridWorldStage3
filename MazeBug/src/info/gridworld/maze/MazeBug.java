@@ -64,10 +64,10 @@ public class MazeBug extends Bug
 
         boolean willMove = canMove();
 
-        if (isEnd == true)
+        if (isEnd)
         {
             //to show step count when reach the goal
-            if (hasShown == false)
+            if (!hasShown)
             {
                 String msg = stepCount.toString() + " steps";
                 JOptionPane.showMessageDialog(null, msg);
