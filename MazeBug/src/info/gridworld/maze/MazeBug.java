@@ -37,7 +37,7 @@ public class MazeBug extends Bug
 
     /**
      * Constructs a box bug that traces a square of a given side length
-     * 
+     *
      * @param length
      *            the side length
      */
@@ -48,7 +48,7 @@ public class MazeBug extends Bug
     }
 
     /**
-     * Moves to the next location of the square.
+     * Move or go back.
      */
     @Override
     public void act()
@@ -61,9 +61,9 @@ public class MazeBug extends Bug
             firstCross.add(last);
             crossLocation.push(firstCross);
         }
-        
+
         boolean willMove = canMove();
-        
+
         if (isEnd == true)
         {
             //to show step count when reach the goal
@@ -91,7 +91,7 @@ public class MazeBug extends Bug
     /**
      * Find all positions that can be move to.
      * Visted locations are excluded.
-     * 
+     *
      * @param loc
      *            the location to detect.
      * @return List of positions.
@@ -142,7 +142,7 @@ public class MazeBug extends Bug
     /**
      * Tests whether this bug can move forward into a location that is empty or
      * contains a flower.
-     * 
+     *
      * @return true if this bug can move.
      */
     @Override
@@ -163,6 +163,16 @@ public class MazeBug extends Bug
         }
     }
 
+    /**
+     * Pick the next location to move from current location.
+     * The red rock is picked first if it is around. Otherwise the
+     * direction with largest probability is picked.
+     * 
+     * Precondition: it is in a grid.
+     * Postcondition:
+     * next = next location to move to
+     * last = current location
+     */
     private void pickNext()
     {
         // TODO get valid adjacent locations
@@ -223,12 +233,12 @@ public class MazeBug extends Bug
         {
             isEnd = true;
         }
-        
+
         // move to the next location
         Location loc = getLocation();
         setDirection(loc.getDirectionToward(next));
         moveTo(next);
-        
+
         // TODO increase the probability for this direction
         int dirIndex = loc.getDirectionToward(next) / 90;
         dirCount[dirIndex]++;
@@ -249,7 +259,12 @@ public class MazeBug extends Bug
         crossLocation.push(newTop);
     }
 
-    // TODO drop flower at loc
+    /**
+     * Drop flower at given location.
+     * CAUTION: if it is used with moveTo, move first, drop next.
+     * 
+     * @param loc where the flower will be drop
+     */
     private void dropFlower(Location loc)
     {
         Grid<Actor> gr = getGrid();
@@ -261,7 +276,9 @@ public class MazeBug extends Bug
         flower.putSelfInGrid(gr, loc);
     }
 
-    // TODO move back to src
+    /**
+     * Go back to where it come from.
+     */
     private void back()
     {
         Grid<Actor> gr = getGrid();
@@ -277,21 +294,21 @@ public class MazeBug extends Bug
         }
 
         Location loc = getLocation();
-        
+
         // pop out the top(contains current location)
         crossLocation.pop();
-        
+
         // the stack is empty, there is no way to go back
         if (crossLocation.size() <= 0)
         {
             return;
         }
-        
+
         // get the src of top. which is [0] at
         // the linked list one way below the top
         next = crossLocation.peek().get(0);
         last = loc;
-        
+
         // move back to src
         setDirection(loc.getDirectionToward(next));
         moveTo(next);
