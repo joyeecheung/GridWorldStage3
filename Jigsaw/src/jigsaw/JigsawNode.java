@@ -7,7 +7,7 @@ import java.io.IOException;
  *
  */
 public class JigsawNode {
-	private static final int dimension = 3; 	// 拼图的维数
+	private static int dimension = 3; 	// 拼图的维数
 //	private static final int dimension = 5; 	// 拼图的维数 5*5
 	private int[] nodesState; 			// 拼图状态：第一位存储空白格的位置；其他各存储对应格子中的数值。
 	private int nodeDepth; 				// 从初始状态到达此状态的步数
@@ -26,7 +26,7 @@ public class JigsawNode {
 			this.parent = null;
 			this.estimatedValue = 0;
 		} else
-			System.out.println("传入参数错误：当前的节点维数为3.请传入长度为" + (dimension * dimension + 1)
+			System.out.println("传入参数错误：当前的节点维数为" + dimension + ".请传入长度为" + (dimension * dimension + 1)
 					+ "的节点状态数组，或者调整Jigsaw类中的节点维数dimension");
 	}
 
@@ -287,10 +287,5 @@ public class JigsawNode {
     public void setDimension(int dim)
     {
         dimension = dim;
-    }
-
-    public int getDimension()
-    {
-        return dimension;
     }
 }

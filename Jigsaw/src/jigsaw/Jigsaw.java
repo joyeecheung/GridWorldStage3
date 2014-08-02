@@ -240,6 +240,7 @@ public class Jigsaw {
 	 *              2,closeList记录了所有访问过的节点；
 	 *     		    3,searchedNodesNum记录了访问过的节点数；
 	 *              4,solutionPath记录了解路径。
+     ******* 注：BFS为A*的特例（估价函数为常数 i.e. 按照访问顺序放入队列即可）
 	 * @return isCompleted, 搜索成功时为true,失败为false
 	 * @throws IOException
 	 */
@@ -248,10 +249,49 @@ public class Jigsaw {
 		String filePath = "BFSearchDialog.txt";
 		PrintWriter pw = new PrintWriter(new FileWriter(filePath));
 		// *************************************
+        	
+		// 访问节点数大于100000个则认为搜索失败
+		int maxNodesNum = 100000;  
+		
+		// 用以存放某一节点的邻接节点
+		Vector<JigsawNode> followJNodes = new Vector<JigsawNode>(); 
+		
+		// 重置求解完成标记为false
+		isCompleted = false;           
+		
+		// (1)将起始节点放入openList中
+		this.sortedInsertOpenList(this.beginJNode);
+		
+		// (2) 如果openList为空，或者访问节点数大于maxNodesNum个，则搜索失败，问题无解;否则循环直到求解成功
+		while (this.openList.isEmpty() != true && searchedNodesNum <= maxNodesNum) {
+			
+			// (2-1)访问openList的第一个节点N，置为当前节点currentJNode
+			//      若currentJNode为目标节点，则搜索成功，设置完成标记isCompleted为true，计算解路径，退出。
+			this.currentJNode = this.openList.elementAt(0);
+			if (this.currentJNode.equals(this.endJNode)){
+				isCompleted = true;
+				this.calSolutionPath();
+				break;
+			}
+			
+			// (2-2)从openList中删除节点N,并将其放入closeList中，表示以访问节点			
+			this.openList.removeElementAt(0);
+			this.closeList.addElement(this.currentJNode);
+			searchedNodesNum++;
+			
+				// 记录并显示搜索过程
+				pw.println("Searching.....Number of searched nodes:" + this.closeList.size() + "   Current state:" + this.currentJNode.toString());
+				System.out.println("Searching.....Number of searched nodes:" + this.closeList.size() + "   Current state:" + this.currentJNode.toString());			
 
-		// Write your code here.
-		
-		
+			// (2-3)寻找所有与currentJNode邻接且未曾被访问的节点，将它们按照当前顺序插入openList中
+			followJNodes = this.findFollowJNodes(this.currentJNode);
+			while (!followJNodes.isEmpty()) {
+                // **********这行是A* 特化为 BFS的关键**************
+				this.openList.addElement(followJNodes.elementAt(0));
+				followJNodes.removeElementAt(0);
+			}
+		}		
+
 		// *************************************
 		this.printResult(pw);
 		pw.close();
