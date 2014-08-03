@@ -22,7 +22,7 @@ public class Jigsaw
     private boolean isCompleted;	// 完成标记：初始为false;当求解成功时，将该标记至为true
     private int searchedNodesNum;	// 已访问节点数： 用以记录所有访问过的节点的数量
     private static final int wrongAllWeight = 10;  // 所有放错位的数码个数在A*估价函数中所占权重
-    private static final int distanceWeight = 10;  // 所有放错位的数码与其正确位置的距离之和在A*估价函数中所占权重
+    private static final int distanceWeight = 20;  // 所有放错位的数码与其正确位置的距离之和在A*估价函数中所占权重
     private static final int wrongNodeWeight = 10;  // 后续节点不正确的数码个数在A*估价函数中所占权重
     private static final int depthWeight = 0;  // 节点深度在A*估价函数中所占权重
 
@@ -293,9 +293,18 @@ public class Jigsaw
      */
     private void sortedInsertOpenList(JigsawNode jNode)
     {
+        // 访问节点数大于30000个则认为搜索失败
+        int maxNodesNum = 30000;
+
         this.estimateValue(jNode);
         for (int i = 0; i < this.openList.size(); i++)
         {
+            // TODO IDA*优化 ： 如果估值+深度 > 搜索限制，跳过
+            //if (jNode.getEstimatedValue() > maxNodesNum)
+            //{
+            //    return;
+            //}
+
             if (jNode.getEstimatedValue() < this.openList.elementAt(i)
                     .getEstimatedValue())
             {

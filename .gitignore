@@ -7,3 +7,5 @@ bmptest
 .swp
 *Dialog.txt
 result.txt
+*.png
+*.dat
