@@ -56,7 +56,7 @@ public class MazeBug extends Bug
         if (stepCount == 0)
         {
             last = getLocation();
-            // TODO push <(0,0)> into the stack
+            //  push <(0,0)> into the stack
             ArrayList<Location> firstCross = new ArrayList<Location>();
             firstCross.add(last);
             crossLocation.push(firstCross);
@@ -111,7 +111,7 @@ public class MazeBug extends Bug
             return valid;
         }
 
-        // TODO check each of the 4 directions
+        //  check each of the 4 directions
         for (int d : validDirections)
         {
             Location check = loc.getAdjacentLocation(d);
@@ -123,12 +123,12 @@ public class MazeBug extends Bug
             }
 
             Actor neighbor = gr.get(check);
-            // TODO if it is null, add it
+            //  if it is null, add it
             if (neighbor == null)
             {
                 valid.add(check);
             }
-            // TODO if it is a red rock, add it
+            //  if it is a red rock, add it
             else if (neighbor instanceof Rock
                     && neighbor.getColor().equals(Color.RED))
             {
@@ -148,7 +148,7 @@ public class MazeBug extends Bug
     @Override
     public boolean canMove()
     {
-        // TODO get valid adjacent locations
+        //  get valid adjacent locations
         Location loc = getLocation();
         ArrayList<Location> valid = getValid(loc);
 
@@ -175,7 +175,7 @@ public class MazeBug extends Bug
      */
     private void pickNext()
     {
-        // TODO get valid adjacent locations
+        //  get valid adjacent locations
         Grid<Actor> gr = getGrid();
         Location loc = getLocation();
         ArrayList<Location> valid = getValid(loc);
@@ -185,7 +185,7 @@ public class MazeBug extends Bug
         {
             Actor neighbor = gr.get(check);
             int dirIndex = loc.getDirectionToward(check) / 90;
-            // TODO check if the end is in them, move to the end if it is
+            //  check if the end is in them, move to the end if it is
             if (neighbor instanceof Rock
                     && neighbor.getColor().equals(Color.RED))
             {
@@ -193,7 +193,7 @@ public class MazeBug extends Bug
                 next = check;
                 break;
             }
-            // TODO choose the one with max probability
+            //  choose the one with max probability
             if (dirCount[dirIndex] >= maxCount)
             {
                 maxCount = dirCount[dirIndex];
@@ -239,18 +239,18 @@ public class MazeBug extends Bug
         setDirection(loc.getDirectionToward(next));
         moveTo(next);
 
-        // TODO increase the probability for this direction
+        //  increase the probability for this direction
         int dirIndex = loc.getDirectionToward(next) / 90;
         dirCount[dirIndex]++;
 
         // drop flower at the previous location
         dropFlower(loc);
 
-        // TODO add next to the end of the top linked list (visited from here)
+        //  add next to the end of the top linked list (visited from here)
         // <loc, ..., next>
         crossLocation.peek().add(next);
 
-        // TODO push a new <(next)> into the stack
+        //  push a new <(next)> into the stack
         // now the top looks like
         // <next>
         // <loc, ..., next>

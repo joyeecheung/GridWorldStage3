@@ -1,6 +1,4 @@
-#! /usr/bin/env/bash
-
-echo "$1 $2 $3" >> result.txt
+#! /usr/bin/env bash
 
 for i in {1..20}; do
     ant run

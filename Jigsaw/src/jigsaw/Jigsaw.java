@@ -21,8 +21,8 @@ public class Jigsaw
     private Vector<JigsawNode> solutionPath;// 解路径  ：用以保存从起始状态到达目标状态的移动路径中的每一个状态节点
     private boolean isCompleted;	// 完成标记：初始为false;当求解成功时，将该标记至为true
     private int searchedNodesNum;	// 已访问节点数： 用以记录所有访问过的节点的数量
-    private static final int wrongAllWeight = 10;  // 所有放错位的数码个数在A*估价函数中所占权重
-    private static final int distanceWeight = 20;  // 所有放错位的数码与其正确位置的距离之和在A*估价函数中所占权重
+    private static final int wrongAllWeight = 0;  // 所有放错位的数码个数在A*估价函数中所占权重
+    private static final int distanceWeight = 10;  // 所有放错位的数码与其正确位置的距离之和在A*估价函数中所占权重
     private static final int wrongNodeWeight = 10;  // 后续节点不正确的数码个数在A*估价函数中所占权重
     private static final int depthWeight = 0;  // 节点深度在A*估价函数中所占权重
 
@@ -495,9 +495,15 @@ public class Jigsaw
                 + nodeDepth * depthWeight);
     }
 
+    /**
+     * 计算所有放错位的数码的个数
+     *
+     * @param jNode
+     *          要计算的节点
+     */
     private static int getWrongAll(JigsawNode jNode)
     {
-        int s = 0; // 所有放错位的数码的个数
+        int s = 0;
         int dimension = JigsawNode.getDimension();
         for (int i = 1; i <= dimension * dimension; i++)
         {
@@ -509,18 +515,24 @@ public class Jigsaw
         return s;
     }
 
+    /**
+     * 计算所有放错位的数码与其正确位置的曼哈顿距离之和
+     *
+     * @param jNode
+     *          要计算的节点。
+     */
     private static int getDistance(JigsawNode jNode)
     {
-        int s = 0; // 所有放错位的数码与其正确位置的曼哈顿距离之和
+        int s = 0;
         int dimension = JigsawNode.getDimension();
         for (int i = 1; i <= dimension * dimension; i++)
         {
             if (jNode.getNodesState()[i] != i && jNode.getNodesState()[i] != 0)
             {
-                int goalCol = (jNode.getNodesState()[i] - 1) % dimension;
                 int goalRow = (jNode.getNodesState()[i] - 1) / dimension;
-                int curCol = (i - 1) % dimension;
+                int goalCol = (jNode.getNodesState()[i] - 1) % dimension;
                 int curRow = (i - 1) / dimension;
+                int curCol = (i - 1) % dimension;
 
                 s += Math.abs(goalRow - curRow) + Math.abs(goalCol - curCol);
             }
@@ -528,25 +540,31 @@ public class Jigsaw
         return s;
     }
 
+    /**
+     * 计算后续节点不正确的数码个数
+     *
+     * @param jNode
+     *          要计算的节点。
+     */
     private static int getWrongNode(JigsawNode jNode)
     {
-        int s = 0; // 后续节点不正确的数码个数
+        int s = 0;
         int dimension = JigsawNode.getDimension();
+
+        // 统计不正确的横向后续节点
+        for (int index = 1; index < dimension * dimension; index++)
+        {
+            if (jNode.getNodesState()[index] + 1 != jNode.getNodesState()[index + 1])
+            {
+                s++;
+            }
+        }
 
         // 统计不正确的纵向后续节点
         for (int index = 1; index < dimension * (dimension - 1); index++)
         {
             if (jNode.getNodesState()[index] + dimension
                 != jNode.getNodesState()[index + dimension])
-            {
-                s++;
-            }
-        }
-
-        // 统计不正确的横向后续节点
-        for (int index = 1; index < dimension * dimension; index++)
-        {
-            if (jNode.getNodesState()[index] + 1 != jNode.getNodesState()[index + 1])
             {
                 s++;
             }
