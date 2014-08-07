@@ -134,6 +134,7 @@ public class MazeBug extends Bug
             {
                 valid.add(check);
             }
+            // if it is a flower i.e. visited, don't add it
         }
 
         return valid;
@@ -180,7 +181,7 @@ public class MazeBug extends Bug
         Location loc = getLocation();
         ArrayList<Location> valid = getValid(loc);
 
-        int maxCount = 0;
+        int maxCount = Integer.MIN_VALUE;
         for (Location check : valid)
         {
             Actor neighbor = gr.get(check);
@@ -193,8 +194,15 @@ public class MazeBug extends Bug
                 next = check;
                 break;
             }
+            //  choose current direction
+            if (dirIndex == getDirection() / 90)
+            {
+                last = next;
+                next = check;
+                break;
+            }
             //  choose the one with max probability
-            if (dirCount[dirIndex] >= maxCount)
+            if (dirCount[dirIndex] > maxCount)
             {
                 maxCount = dirCount[dirIndex];
                 last = next;
@@ -236,12 +244,20 @@ public class MazeBug extends Bug
 
         // move to the next location
         Location loc = getLocation();
+        int oldDir = getDirection();
+        int moveDir = loc.getDirectionToward(next);
+        int backDir = (moveDir + Location.HALF_CIRCLE) % 360;
+
         setDirection(loc.getDirectionToward(next));
         moveTo(next);
 
         //  increase the probability for this direction
-        int dirIndex = loc.getDirectionToward(next) / 90;
-        dirCount[dirIndex]++;
+        if (oldDir == moveDir)
+        {
+            dirCount[backDir / 90]--;
+        } 
+
+        dirCount[moveDir / 90]++;
 
         // drop flower at the previous location
         dropFlower(loc);
@@ -310,6 +326,8 @@ public class MazeBug extends Bug
         next = crossLocation.peek().get(0);
         last = loc;
 
+        int backDir = loc.getDirectionToward(next);
+        dirCount[backDir / 90]--;
         // move back to src
         setDirection(loc.getDirectionToward(next));
         moveTo(next);
