@@ -137,8 +137,6 @@ public class BMPImageProcessorTest
         byte[] srcBuffer = new byte[BUFFER_SIZE];
         byte[] goalBuffer = new byte[BUFFER_SIZE];
 
-        goalStream.skip(54);
-        resStream.skip(54);
         while ((goalStream.read(srcBuffer, 0, BUFFER_SIZE)) != -1) {
             resStream.read(goalBuffer, 0, BUFFER_SIZE);
             assertArrayEquals(fileName + ": The written file changed.", srcBuffer, goalBuffer);
