@@ -7,7 +7,7 @@ import java.awt.image.RGBImageFilter;
 
 /**
  * The image processor for BMP image.
- * 
+ *
  * @author joyeecheung
  *
  */
@@ -16,7 +16,7 @@ public class BMPImageProcessor implements IImageProcessor
 
     /**
      * Get the gray scale image.
-     * 
+     *
      * @param sourceImage
      *            the source image.
      */
@@ -31,7 +31,7 @@ public class BMPImageProcessor implements IImageProcessor
 
     /**
      * Get the red channel image.
-     * 
+     *
      * @param sourceImage
      *            the source image.
      */
@@ -46,7 +46,7 @@ public class BMPImageProcessor implements IImageProcessor
 
     /**
      * Get the green channel image.
-     * 
+     *
      * @param sourceImage
      *            the source image.
      */
@@ -61,7 +61,7 @@ public class BMPImageProcessor implements IImageProcessor
 
     /**
      * Get the blue channel image.
-     * 
+     *
      * @param sourceImage
      *            the source image.
      */
@@ -77,7 +77,7 @@ public class BMPImageProcessor implements IImageProcessor
 
 /**
  * The filter class for obtaining channel images.
- * 
+ *
  * @author joyeecheung
  *
  */
@@ -93,7 +93,7 @@ class ChannelFilter extends RGBImageFilter
 
     /**
      * Construct a channel filter with given mask.
-     * 
+     *
      * @param mask
      *            mask for each pixel.
      */
@@ -110,7 +110,7 @@ class ChannelFilter extends RGBImageFilter
     /**
      * Convert a single input pixel in the default RGB
      * ColorModel to a filtered pixel.
-     * 
+     *
      * @param x
      *            the X coordinate of the pixel
      * @param y
@@ -129,7 +129,7 @@ class ChannelFilter extends RGBImageFilter
 
 /**
  * The filter class for obtaining gray scale images.
- * 
+ *
  * @author joyeecheung
  *
  */
@@ -146,7 +146,7 @@ class GrayFilter extends RGBImageFilter
 
     /**
      * Construct a gray scale filter with given mask.
-     * 
+     *
      * @param mask
      *            mask for each pixel.
      */
@@ -162,7 +162,7 @@ class GrayFilter extends RGBImageFilter
     /**
      * Convert a single input pixel in the default RGB
      * ColorModel to a gray scale pixel.
-     * 
+     *
      * @param x
      *            the X coordinate of the pixel
      * @param y
@@ -178,7 +178,9 @@ class GrayFilter extends RGBImageFilter
         int red = (RED_ONLY_MASK & rgb) >> 16;
         int green = (GREEN_ONLY_MASK & rgb) >> 8;
         int blue = BLUE_ONLY_MASK & rgb;
-        int gray = (int)(red * RED_WEIGHT + green * GREEN_WEIGHT + blue * BLUE_WEIGHT);
+        int gray = (int) (red * RED_WEIGHT
+                + green * GREEN_WEIGHT
+                + blue * BLUE_WEIGHT);
         return (rgb & 0xFF000000) | (gray << 16) | (gray << 8) | gray;
     }
 }

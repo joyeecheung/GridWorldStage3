@@ -1,6 +1,5 @@
 import imagereader.IImageIO;
 
-import java.awt.Graphics2D;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -31,6 +30,18 @@ public class BMPImageIO implements IImageIO
     private static final int DEFAULT_BPP = 24;
     // count of red, green, blue = 3
     private static final int RGB_COUNT = 3;
+    // 4 bytes
+    private static final int FOUR_BYTES = 4;
+    // 2 bytes
+    private static final int TWO_BYTES = 2;
+    // offset of size in fileHeader
+    private static final int SIZE_OFFSET = 2;
+    // offset of width in DIB header
+    private static final int WIDTH_OFFSET = 4;
+    // offset of height in DIB header
+    private static final int HEIGHT_OFFSET = 8;
+    // offset of bits per pixel in DIB header
+    private static final int BPP_OFFSET = 14;
 
     /**
      * @param filepath
@@ -45,17 +56,17 @@ public class BMPImageIO implements IImageIO
         // first 14 bytes containing file information
         byte[] fileHeader = new byte[F_HEADER_SIZE];
         inputStream.read(fileHeader, 0, F_HEADER_SIZE);
-        int size = readBytes(fileHeader, 2, 4);
+        int size = readBytes(fileHeader, SIZE_OFFSET, FOUR_BYTES);
 
         // next 40 bytes containing image information
         byte[] dibHeader = new byte[DIB_HEADER_SIZE];
         inputStream.read(dibHeader, 0, DIB_HEADER_SIZE);
 
-        int width = readBytes(dibHeader, 4, 4);
-        int height = readBytes(dibHeader, 8, 4);
+        int width = readBytes(dibHeader, WIDTH_OFFSET, FOUR_BYTES);
+        int height = readBytes(dibHeader, HEIGHT_OFFSET, FOUR_BYTES);
 
         // get the bits per pixel, which is 24 for this test
-        int bitsPerPx = readBytes(dibHeader, 14, 2);
+        int bitsPerPx = readBytes(dibHeader, BPP_OFFSET, TWO_BYTES);
 
         if (bitsPerPx == DEFAULT_BPP)
         {
@@ -76,7 +87,8 @@ public class BMPImageIO implements IImageIO
                 for (int j = 0; j < width; j++)
                 {
                     // the rgb for each pixel is each 3 bytes | alpha
-                    pixels[i * width + j] = ALPHA | readBytes(rgbs, index, RGB_COUNT);
+                    pixels[i * width + j] = ALPHA
+                            | readBytes(rgbs, index, RGB_COUNT);
                     index += RGB_COUNT;
                 }
                 index += padding;
