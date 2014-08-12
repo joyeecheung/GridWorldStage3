@@ -17,7 +17,7 @@ import javax.swing.JOptionPane;
  * A <code>MazeBug</code> can find its way in a maze. <br />
  * The implementation of this class is testable on the AP CS A and AB exams.
  */
-public class MazeBug2 extends Bug
+public class MazeBug extends Bug
 {
     public Location next;
     public Location last;
@@ -41,7 +41,7 @@ public class MazeBug2 extends Bug
      * @param length
      *            the side length
      */
-    public MazeBug2()
+    public MazeBug()
     {
         setColor(Color.GREEN);
 
@@ -168,7 +168,7 @@ public class MazeBug2 extends Bug
      * Pick the next location to move from current location.
      * The red rock is picked first if it is around. Otherwise the
      * direction with largest probability is picked.
-     * 
+     *
      * Precondition: it is in a grid.
      * Postcondition:
      * next = next location to move to
@@ -185,7 +185,7 @@ public class MazeBug2 extends Bug
         for (Location check : valid)
         {
             Actor neighbor = gr.get(check);
-            int dirIndex = loc.getDirectionToward(check) / 90;
+            int dirIndex = loc.getDirectionToward(check) / Location.RIGHT;
             //  check if the end is in them, move to the end if it is
             if (neighbor instanceof Rock
                     && neighbor.getColor().equals(Color.RED))
@@ -195,7 +195,7 @@ public class MazeBug2 extends Bug
                 break;
             }
             //  choose current direction
-            if (dirIndex == getDirection() / 90)
+            if (dirIndex == getDirection() / Location.RIGHT)
             {
                 last = next;
                 next = check;
@@ -246,7 +246,7 @@ public class MazeBug2 extends Bug
         Location loc = getLocation();
         int oldDir = getDirection();
         int moveDir = loc.getDirectionToward(next);
-        int backDir = (moveDir + Location.HALF_CIRCLE) % 360;
+        int backDir = (moveDir + Location.HALF_CIRCLE) % Location.FULL_CIRCLE;
 
         setDirection(loc.getDirectionToward(next));
         moveTo(next);
@@ -254,10 +254,10 @@ public class MazeBug2 extends Bug
         //  increase the probability for this direction
         if (oldDir == moveDir)
         {
-            dirCount[backDir / 90]--;
-        } 
+            dirCount[backDir / Location.RIGHT]--;
+        }
 
-        dirCount[moveDir / 90]++;
+        dirCount[moveDir / Location.RIGHT]++;
 
         // drop flower at the previous location
         dropFlower(loc);
@@ -278,7 +278,7 @@ public class MazeBug2 extends Bug
     /**
      * Drop flower at given location.
      * CAUTION: if it is used with moveTo, move first, drop next.
-     * 
+     *
      * @param loc
      *            where the flower will be drop
      */
@@ -327,7 +327,7 @@ public class MazeBug2 extends Bug
         last = loc;
 
         int backDir = loc.getDirectionToward(next);
-        dirCount[backDir / 90]--;
+        dirCount[backDir / Location.RIGHT]--;
         // move back to src
         setDirection(loc.getDirectionToward(next));
         moveTo(next);
