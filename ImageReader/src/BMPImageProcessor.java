@@ -135,6 +135,15 @@ class ChannelFilter extends RGBImageFilter
  */
 class GrayFilter extends RGBImageFilter
 {
+    // masks to extract each channel
+    private static final int RED_ONLY_MASK = 0x00FF0000;
+    private static final int GREEN_ONLY_MASK = 0x0000FF00;
+    private static final int BLUE_ONLY_MASK = 0x000000FF;
+    // weight for each channel to get gray scale
+    private static final double RED_WEIGHT = 0.299;
+    private static final double GREEN_WEIGHT = 0.587;
+    private static final double BLUE_WEIGHT = 0.114;
+
     /**
      * Construct a gray scale filter with given mask.
      * 
@@ -166,10 +175,10 @@ class GrayFilter extends RGBImageFilter
     @Override
     public int filterRGB(int x, int y, int rgb)
     {
-        int red = (0x00FF0000 & rgb) >> 16;
-        int green = (0x0000FF00 & rgb) >> 8;
-        int blue = 0x000000FF & rgb;
-        int gray = (int)(red * 0.299 + green * 0.587 + blue * 0.114);
+        int red = (RED_ONLY_MASK & rgb) >> 16;
+        int green = (GREEN_ONLY_MASK & rgb) >> 8;
+        int blue = BLUE_ONLY_MASK & rgb;
+        int gray = (int)(red * RED_WEIGHT + green * GREEN_WEIGHT + blue * BLUE_WEIGHT);
         return (rgb & 0xFF000000) | (gray << 16) | (gray << 8) | gray;
     }
 }

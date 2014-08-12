@@ -37,22 +37,29 @@ public class BMPImageIOTest
         });
     }
 
+    /**
+     * Set up test resources.
+     */
     public BMPImageIOTest(String resPath, String srcPath)
     {
         BMPImageIO imageio = new BMPImageIO();
         try
         {
+            // read source with myRead
             result = toBufferedImage(imageio.myRead(srcPath));
 
+            // write the image with myWrite
             File resFile = new File(resPath);
-
             if (!resFile.exists())
             {
                 resFile.createNewFile();
             }
-
             imageio.myWrite(result, resPath);
+
+            // read source with ImageIO.read of std lib
             source = ImageIO.read(new FileInputStream(srcPath));
+
+            // create input stream for source and written image
             srcStream = new FileInputStream(srcPath);
             resStream = new FileInputStream(resPath);
         }
@@ -97,6 +104,7 @@ public class BMPImageIOTest
         byte[] srcBuffer = new byte[BUFFER_SIZE];
         byte[] resBuffer = new byte[BUFFER_SIZE];
 
+        // skip the header
         srcStream.skip(54);
         resStream.skip(54);
         while ((srcStream.read(srcBuffer, 0, BUFFER_SIZE)) != -1) {
