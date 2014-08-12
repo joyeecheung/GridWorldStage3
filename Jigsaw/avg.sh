@@ -1,1 +1,1 @@
-tail -n 20 result.txt | awk '{ total += $1; count++ } END { print total/count }'
+tail -n 50 result.txt | awk '{ if ($1 != -1) { total += $1; count++ } } END { print total/count }'
