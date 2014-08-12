@@ -17,7 +17,7 @@ import javax.swing.JOptionPane;
  * A <code>MazeBug</code> can find its way in a maze. <br />
  * The implementation of this class is testable on the AP CS A and AB exams.
  */
-public class MazeBug extends Bug
+public class MazeBug2 extends Bug
 {
     public Location next;
     public Location last;
@@ -29,6 +29,9 @@ public class MazeBug extends Bug
     public Integer stepCount = 0;
     boolean hasShown = false;//final message has been shown
 
+    // number of times the direction is chosen
+    // 0 - NORTH, 1 - EAST, 2 - SOUTH, 3 - WEST
+    int[] dirCount = { 0, 0, 0, 0 };
     int[] validDirections = { Location.NORTH, Location.EAST, Location.SOUTH,
             Location.WEST };
 
@@ -38,7 +41,7 @@ public class MazeBug extends Bug
      * @param length
      *            the side length
      */
-    public MazeBug()
+    public MazeBug2()
     {
         setColor(Color.GREEN);
 
@@ -163,6 +166,7 @@ public class MazeBug extends Bug
 
     /**
      * Pick the next location to move from current location.
+     * The red rock is picked first if it is around. Otherwise the
      * direction with largest probability is picked.
      * 
      * Precondition: it is in a grid.
@@ -177,25 +181,35 @@ public class MazeBug extends Bug
         Location loc = getLocation();
         ArrayList<Location> valid = getValid(loc);
 
+        int maxCount = Integer.MIN_VALUE;
         for (Location check : valid)
         {
             Actor neighbor = gr.get(check);
-            last = next;
-            next = check;
-
             int dirIndex = loc.getDirectionToward(check) / 90;
             //  check if the end is in them, move to the end if it is
             if (neighbor instanceof Rock
                     && neighbor.getColor().equals(Color.RED))
             {
+                last = next;
+                next = check;
                 break;
             }
             //  choose current direction
             if (dirIndex == getDirection() / 90)
             {
+                last = next;
+                next = check;
                 break;
             }
+            //  choose the one with max probability
+            if (dirCount[dirIndex] > maxCount)
+            {
+                maxCount = dirCount[dirIndex];
+                last = next;
+                next = check;
+            }
         }
+
     }
 
     /**
@@ -230,9 +244,20 @@ public class MazeBug extends Bug
 
         // move to the next location
         Location loc = getLocation();
+        int oldDir = getDirection();
+        int moveDir = loc.getDirectionToward(next);
+        int backDir = (moveDir + Location.HALF_CIRCLE) % 360;
 
         setDirection(loc.getDirectionToward(next));
         moveTo(next);
+
+        //  increase the probability for this direction
+        if (oldDir == moveDir)
+        {
+            dirCount[backDir / 90]--;
+        } 
+
+        dirCount[moveDir / 90]++;
 
         // drop flower at the previous location
         dropFlower(loc);
@@ -301,6 +326,8 @@ public class MazeBug extends Bug
         next = crossLocation.peek().get(0);
         last = loc;
 
+        int backDir = loc.getDirectionToward(next);
+        dirCount[backDir / 90]--;
         // move back to src
         setDirection(loc.getDirectionToward(next));
         moveTo(next);
