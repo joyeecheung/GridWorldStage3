@@ -9,6 +9,7 @@ import info.gridworld.grid.Location;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Stack;
 
 import javax.swing.JOptionPane;
@@ -176,26 +177,10 @@ public class MazeBug extends Bug
         Grid<Actor> gr = getGrid();
         Location loc = getLocation();
         ArrayList<Location> valid = getValid(loc);
-
-        for (Location check : valid)
-        {
-            Actor neighbor = gr.get(check);
-            last = next;
-            next = check;
-
-            int dirIndex = loc.getDirectionToward(check) / 90;
-            //  check if the end is in them, move to the end if it is
-            if (neighbor instanceof Rock
-                    && neighbor.getColor().equals(Color.RED))
-            {
-                break;
-            }
-            //  choose current direction
-            if (dirIndex == getDirection() / 90)
-            {
-                break;
-            }
-        }
+        Random randomGenerator = new Random();
+        int index = randomGenerator.nextInt(valid.size());
+        last = next;
+        next = valid.get(index);
     }
 
     /**
