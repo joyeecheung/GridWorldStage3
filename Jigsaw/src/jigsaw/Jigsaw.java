@@ -22,8 +22,8 @@ public class Jigsaw
     private boolean isCompleted;	// 完成标记：初始为false;当求解成功时，将该标记至为true
     private int searchedNodesNum;	// 已访问节点数： 用以记录所有访问过的节点的数量
     private static final int wrongAllWeight = 0;  // 所有放错位的数码个数在A*估价函数中所占权重
-    private static final int distanceWeight = 1;  // 所有放错位的数码与其正确位置的距离之和在A*估价函数中所占权重
-    private static final int wrongNodeWeight = 1;  // 后续节点不正确的数码个数在A*估价函数中所占权重
+    private static final int distanceWeight = 5;  // 所有放错位的数码与其正确位置的距离之和在A*估价函数中所占权重
+    private static final int wrongNodeWeight = 3;  // 后续节点不正确的数码个数在A*估价函数中所占权重
     private static final int depthWeight = 0;  // 节点深度在A*估价函数中所占权重
     private int threshold = Integer.MAX_VALUE;
 
@@ -297,13 +297,17 @@ public class Jigsaw
         this.estimateValue(jNode);
         for (int i = 0; i < this.openList.size(); i++)
         {
+            /*
             int cost = jNode.getEstimatedValue() + jNode.getNodeDepth();
             // TODO IDA*优化 ： 如果估值+深度 > 搜索限制，跳过
             if (cost > threshold)
             {
-                threshold = cost; 
+                if (cost < threshold)
+                {
+                    threshold = cost; 
+                }
                 return;
-            }
+            } */
 
             if (jNode.getEstimatedValue() < this.openList.elementAt(i)
                     .getEstimatedValue())
@@ -425,9 +429,11 @@ public class Jigsaw
         // 访问节点数大于30000个则认为搜索失败
         int maxNodesNum = 30000;
 
+        /*
         // 设置IDA*阈值
         estimateValue(this.beginJNode);
-        int threshold = this.beginJNode.getEstimatedValue();
+        int threshold = this.beginJNode.getEstimatedValue();*/
+        
 
         // 用以存放某一节点的邻接节点
         Vector<JigsawNode> followJNodes = new Vector<JigsawNode>();
